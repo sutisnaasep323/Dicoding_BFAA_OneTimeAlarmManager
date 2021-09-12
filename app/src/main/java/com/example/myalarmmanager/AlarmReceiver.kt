@@ -1,12 +1,17 @@
 package com.example.myalarmmanager
 
-import android.app.AlarmManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.Ringtone
+import android.media.RingtoneManager
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -77,5 +82,41 @@ class AlarmReceiver : BroadcastReceiver() {
         } catch (e: ParseException){
             true
         }
+    }
+
+    private fun showAlarmNotification(context: Context, title: String,message: String,notifId: Int){
+        val channelId = "Channel_1"
+        val channelName = "AlarmManager channel"
+
+        val notificationManagerCompat = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val builder = NotificationCompat.Builder(context,channelId)
+            .setSmallIcon(R.drawable.ic_baseline_time_black)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, android.R.color.transparent))
+            .setVibrate(longArrayOf(1000,1000,1000,1000,1000))
+            .setSound(alarmSound)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT)
+
+            channel.enableVibration(true)
+            channel.vibrationPattern = longArrayOf(1000,1000,1000,1000,1000)
+
+            builder.setChannelId(channelId)
+
+            notificationManagerCompat.createNotificationChannel(channel)
+
+        }
+
+        val notification = builder.build()
+
+        notificationManagerCompat.notify(notifId, notification)
+
+
     }
 }
