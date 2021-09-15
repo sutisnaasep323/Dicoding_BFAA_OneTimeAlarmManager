@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:inputType="text"
-        android:text="@string/alarm_message" />
+        android:hint="@string/alarm_message" />
 
     <Button
         android:id="@+id/btn_set_once_alarm"
