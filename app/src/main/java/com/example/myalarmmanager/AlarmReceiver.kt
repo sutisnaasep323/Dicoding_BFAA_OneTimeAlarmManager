@@ -21,10 +21,18 @@ class AlarmReceiver : BroadcastReceiver() {
     companion object {
         const val TYPE_ONE_TIME = "OneTimeAlarm"
         const val TYPE_REPERATING = "RepeatingAlarm"
+        /*
+        Dua baris di atas adalah konstanta untuk menentukan tipe alarm. Dan selanjutnya,
+        dua baris di bawah ini adalah konstanta untuk intent key.
+         */
         const val EXTRA_MESSAGE = "message"
         const val EXTRA_TYPE = "type"
 
         // siapkan 2 id untuk 2 macam alarm
+        /*
+        Di sini kita menggunakan dua konstanta bertipe data integer untuk menentukan notif ID
+        sebagai ID untuk menampilkan notifikasi kepada pengguna.
+         */
         private const val ID_ONETIME = 100
         private const val ID_REPEATING = 101
 
@@ -32,6 +40,9 @@ class AlarmReceiver : BroadcastReceiver() {
         private const val TIME_FORMAT = "HH:mm"
     }
 
+    /*
+   Ketika kondisi sesuai, maka akan BroadcastReceiver akan running dengan semua proses yang terdapat di dalam metode onReceive()
+   */
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         val type = intent.getStringExtra(EXTRA_TYPE)
@@ -51,6 +62,10 @@ class AlarmReceiver : BroadcastReceiver() {
         Toast.makeText(context,"$title : $message", Toast.LENGTH_LONG).show()
     }
 
+    /*
+    Pada kode di bawah kita membuat sebuah obyek untuk AlarmManager. Kemudian kita menyiapkan
+    sebuah Intent yang akan menjalankan AlarmReceiver dan membawa data berupa alarm dan pesan
+     */
     fun setOneTimeAlarm(context: Context, type: String, date: String, time: String, message: String) {
         if (isDateInvalid(date, DATE_FORMAT) || isDateInvalid(time, TIME_FORMAT)) return
 
@@ -60,18 +75,39 @@ class AlarmReceiver : BroadcastReceiver() {
         intent.putExtra(EXTRA_TYPE, type)
 
         Log.e("ONE TIME", "$date $time")
+        /*
+        Pada kode di bawah kita memecah data date dan time untuk mengambil nilai tahun, bulan, hari, jam dan menit.
+         */
         val dateArray = date.split("-").toTypedArray()
         val timeArray = time.split(":").toTypedArray()
 
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, Integer.parseInt(dateArray[0]))
+        /*
+        Mengapa kode di bawah, data kita kurangi 1? Misal tanggal yang kita masukkan adalah 2016-09-27.
+        Jika kita pecah, maka kita akan memperoleh nilai 2016 (tahun), 9 (bulan), dan 27 (hari).
+
+        Masalahnya adalah, nilai bulan ke 9 pada kelas Calendar bukanlah bulan September. Ini karena
+        indeksnya dimulai dari 0. Jadi, untuk memperoleh bulan September, maka nilai 9 tadi harus kita kurangi 1
+         */
         calendar.set(Calendar.MONTH, Integer.parseInt(dateArray[1]) - 1)
         calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateArray[2]))
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]))
         calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]))
         calendar.set(Calendar.SECOND, 0)
 
+        /*
+        Intent yang dibuat akan dieksekusi ketika waktu alarm sama dengan waktu pada sistem Android.
+        Di sini komponen PendingIntent akan diberikan kepada BroadcastReceiver.
+         */
+
+        /*
+        Yang membedakan satu alarm dengan alarm lain adalah pada ID. Jika kita merubah nilai waktu
+        dan menjalankan ulang alarm dengan ID yang sama, maka akan merubah yang sudah diset sebelumnya.
+         */
         val pendingIntent = PendingIntent.getBroadcast(context, ID_ONETIME, intent, 0)
+        // kita memasang alarm yang dibuat dengan tipe RTC_WAKEUP, Tipe alarm ini dapat membangunkan
+        // peranti (jika dalam posisi sleep) untuk menjalankan obyek PendingIntent
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
         Toast.makeText(context, "One time alarm set up", Toast.LENGTH_SHORT).show()
     }
@@ -87,6 +123,9 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
+    /*
+    Metode di bawah merupakan sebuah metode untuk membuat dan menampilkan notifikasi yang kompatibel dengan beragam API dari Android
+     */
     private fun showAlarmNotification(context: Context, title: String, message: String, notifId: Int) {
         val channelId = "Channel_1"
         val channelName = "AlarmManager channel"

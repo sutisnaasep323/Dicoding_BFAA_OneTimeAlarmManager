@@ -48,6 +48,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerFragme
                 val onceTime = binding?.tvOnceTime?.text.toString()
                 val onceMessage = binding?.edtOnceMassage?.text.toString()
 
+                /*
+                Kode di bawah berfungsi untuk memanggil metode setOneTimeAlarm yang berada di dalam AlarmReceiver
+                 */
                 alarmReceiver.setOneTimeAlarm(this, AlarmReceiver.TYPE_ONE_TIME,
                     onceDate,
                     onceTime,
@@ -58,10 +61,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerFragme
         }
     }
 
+    /*
+    Kode di bawah ini adalah hasil dari implementasi dari DatePickerFragment.DialogDateListener, TimePickerFragment.DialogTimeListener
+    Kode ini adalah hasil dari callback dari DatePickerFragment.DialogDateListener dan TimePickerFragment.DialogTimeListener
+    yang kemudian akan ditampilkan hasilnya.
+     */
     override fun onDialogDateSet(tag: String?, year: Int, month: Int, dayOfMonth: Int) {
         // Siapkan date formatter-nya terlebih dahulu
         val calendar = Calendar.getInstance()
         calendar.set(year, month, dayOfMonth)
+        // kode “yyyy-MM-dd”, inilah format untuk menampilkan tanggal dengan format seperti 2016-09-29
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         // Set text dari textview once
         binding?.tvOnceDate?.text = dateFormat.format(calendar.time)

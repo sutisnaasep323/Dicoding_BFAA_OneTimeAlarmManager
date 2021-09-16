@@ -28,6 +28,11 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
         val formatHour24 = true
         return TimePickerDialog(activity, this, hour, minute, formatHour24)
     }
+
+    /*
+    Berbeda dengan kelas DatePickerFragment, TimePickerFragment diimplementasikan dengan metode
+    TimePickerDialog.OnTimeSetListener. Variabel yang berbeda adalah jam dan menit
+     */
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         mListener?.onDialogTimeSet(tag, hourOfDay, minute)
     }

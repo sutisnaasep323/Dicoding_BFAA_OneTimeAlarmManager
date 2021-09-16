@@ -12,6 +12,10 @@ class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private var mListener: DialogDateListener? = null
 
+    /*
+    Fungsi onAttach() hanya sekali dipanggil dalam fragment dan berfungsi untuk mengkaitkan dengan activity pemanggil
+    sedangkan onDetach() hanya dipanggil sebelum fragmen tidak lagi dikaitkan dengan activity pemanggil.
+     */
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mListener = context as DialogDateListener?
@@ -30,6 +34,11 @@ class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
         return DatePickerDialog(activity as Context, this, year, month, date)
     }
 
+    /*
+    Fungsi onDateSet akan dipanggil ketika kita memilih tanggal yang kita inginkan. Kemudian
+    setelah tanggal dipilih maka variable tanggal, bulan dan tahun akan dikirim ke MainActivity
+    menggunakan bantuan interface DialogDateListener
+     */
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         mListener?.onDialogDateSet(tag, year, month, dayOfMonth)
     }
