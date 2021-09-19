@@ -20,7 +20,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     companion object {
         const val TYPE_ONE_TIME = "OneTimeAlarm"
-        const val TYPE_REPERATING = "RepeatingAlarm"
+        const val TYPE_REPEATING = "RepeatingAlarm"
         /*
         Dua baris di atas adalah konstanta untuk menentukan tipe alarm. Dan selanjutnya,
         dua baris di bawah ini adalah konstanta untuk intent key.
@@ -48,7 +48,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val type = intent.getStringExtra(EXTRA_TYPE)
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 
-        val title = if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) TYPE_ONE_TIME else TYPE_REPERATING
+        val title = if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) TYPE_ONE_TIME else TYPE_REPEATING
         val notifId = if (type.equals(TYPE_ONE_TIME, ignoreCase = true)) ID_ONETIME else ID_REPEATING
 
         showToast(context, title, message)
